@@ -32,7 +32,7 @@ class ChatPromptController extends ApiController
             ->get();
 
         return $this->successResponse('Chat prompts loaded', [
-            'prompts' => ChatPromptResource::collection($prompts),
+            'prompts' => ChatPromptResource::collection($prompts)->resolve(),
         ]);
     }
 

@@ -33,7 +33,9 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app/private'),
-            'serve' => true,
+            // Keep false so /storage/* is not captured by the private disk route
+            // when the public/storage symlink is missing.
+            'serve' => false,
             'throw' => false,
             'report' => false,
         ],

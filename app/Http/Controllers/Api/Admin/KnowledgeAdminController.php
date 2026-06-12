@@ -55,20 +55,23 @@ class KnowledgeAdminController extends ApiController
             ->paginate((int) $request->query('per_page', 25));
 
         return $this->successResponse('Knowledge chunks loaded', [
-            'chunks' => $chunks->through(fn (KnowledgeChunk $chunk) => [
-                'id' => $chunk->id,
-                'locale' => $chunk->locale,
-                'source_type' => $chunk->source_type,
-                'source_id' => $chunk->source_id,
-                'title' => $chunk->title,
-                'slug' => $chunk->slug,
-                'path' => $chunk->public_path ? '/'.ltrim($chunk->public_path, '/') : null,
-                'url' => $chunk->publicUrl(),
-                'chat_only' => $chunk->isChatOnly(),
-                'chunk_index' => $chunk->chunk_index,
-                'content_preview' => mb_substr($chunk->content, 0, 200),
-                'is_public' => $chunk->is_public,
-            ]),
+            'chunks' => $chunks->getCollection()
+                ->map(fn (KnowledgeChunk $chunk) => [
+                    'id' => $chunk->id,
+                    'locale' => $chunk->locale,
+                    'source_type' => $chunk->source_type,
+                    'source_id' => $chunk->source_id,
+                    'title' => $chunk->title,
+                    'slug' => $chunk->slug,
+                    'path' => $chunk->public_path ? '/'.ltrim($chunk->public_path, '/') : null,
+                    'url' => $chunk->publicUrl(),
+                    'chat_only' => $chunk->isChatOnly(),
+                    'chunk_index' => $chunk->chunk_index,
+                    'content_preview' => mb_substr($chunk->content, 0, 200),
+                    'is_public' => $chunk->is_public,
+                ])
+                ->values()
+                ->all(),
             'meta' => [
                 'current_page' => $chunks->currentPage(),
                 'last_page' => $chunks->lastPage(),
